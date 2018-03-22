@@ -406,22 +406,6 @@ public class App : MonoBehaviour
     }
     #endregion
 
-    //    void OnApplicationFocus(bool isFocus)
-    //    {
-    //        if (isFocus)
-    //        {
-    //        }
-    //        else
-    //        {
-    //#if !UNITY_EDITOR
-    //            Debug.Log("离开游戏 激活推送");
-    //            if (appdomain != null && method_out != null)
-    //            {
-    //                appdomain.Invoke(method_out, null, null);
-    //            }
-    //#endif
-    //        }
-    //    }
     void OnApplicationPause(bool isPause)
     {
         if (isPause)
@@ -522,15 +506,6 @@ public class App : MonoBehaviour
 #endif
         Load(game);
     }
-
-    //void OnGUI()
-    //{
-    //    if (GUI.Button(new Rect(100, 100, 100, 100), "横屏"))
-    //        Screen.orientation = ScreenOrientation.LandscapeLeft;
-    //    if (GUI.Button(new Rect(100, 200, 100, 100), "竖屏"))
-    //        Screen.orientation = ScreenOrientation.Portrait;
-
-    //}
 }
 public enum RunTyp
 {
