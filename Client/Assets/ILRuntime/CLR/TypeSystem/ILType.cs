@@ -13,11 +13,20 @@ namespace ILRuntime.CLR.TypeSystem
 {
     public class ILType : IType
     {
+        /// <summary>
+        /// 函数集合
+        /// </summary>
         Dictionary<string, List<ILMethod>> methods;
+        /// <summary>
+        /// 类本身
+        /// </summary>
         TypeReference typeRef;
         TypeDefinition definition;
         ILRuntime.Runtime.Enviorment.AppDomain appdomain;
         ILMethod staticConstructor;
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         List<ILMethod> constructors;
         IType[] fieldTypes;
         FieldDefinition[] fieldDefinitions;
@@ -523,7 +532,13 @@ namespace ILRuntime.CLR.TypeSystem
             }
             return null;
         }
-
+        /// <summary>
+        /// 获取类里面的函数
+        /// </summary>
+        /// <param name="name">函数名</param>
+        /// <param name="paramCount">参数个数</param>
+        /// <param name="declaredOnly"></param>
+        /// <returns></returns>
         public IMethod GetMethod(string name, int paramCount, bool declaredOnly = false)
         {
             if (methods == null)
@@ -548,7 +563,9 @@ namespace ILRuntime.CLR.TypeSystem
                     return null;
             }
         }
-
+        /// <summary>
+        /// 初始化类里面的函数
+        /// </summary>
         void InitializeMethods()
         {
             methods = new Dictionary<string, List<ILMethod>>();

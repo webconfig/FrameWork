@@ -15,9 +15,15 @@ using ILRuntime.Other;
 
 namespace ILRuntime.Runtime.Intepreter
 {
+    /// <summary>
+    /// 执行代码
+    /// </summary>
     public unsafe class ILIntepreter
     {
         Enviorment.AppDomain domain;
+        /// <summary>
+        /// 数据栈
+        /// </summary>
         RuntimeStack stack;
         object _lockObj;
         bool allowUnboundCLRMethod;
@@ -63,6 +69,13 @@ namespace ILRuntime.Runtime.Intepreter
             LastStepFrameBase = (StackObject*)0;
             LastStepInstructionIndex = 0;
         }
+        /// <summary>
+        /// 执行方法
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="instance"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public object Run(ILMethod method, object instance, object[] p)
         {
             IList<object> mStack = stack.ManagedStack;

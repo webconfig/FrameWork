@@ -29,11 +29,17 @@ namespace ILRuntime.Runtime.Enviorment
         Dictionary<int, ILIntepreter> intepreters = new Dictionary<int, ILIntepreter>();
         Dictionary<Type, CrossBindingAdaptor> crossAdaptors = new Dictionary<Type, CrossBindingAdaptor>(new ByReferenceKeyComparer<Type>());
         Dictionary<Type, ValueTypeBinder> valueTypeBinders = new Dictionary<Type, ValueTypeBinder>();
+        /// <summary>
+        /// 类型集合
+        /// </summary>
         ThreadSafeDictionary<string, IType> mapType = new ThreadSafeDictionary<string, IType>();
         Dictionary<Type, IType> clrTypeMapping = new Dictionary<Type, IType>(new ByReferenceKeyComparer<Type>());
         ThreadSafeDictionary<int, IType> mapTypeToken = new ThreadSafeDictionary<int, IType>();
         ThreadSafeDictionary<int, IMethod> mapMethod = new ThreadSafeDictionary<int, IMethod>();
         ThreadSafeDictionary<long, string> mapString = new ThreadSafeDictionary<long, string>();
+        /// <summary>
+        /// 函数重定向
+        /// </summary>
         Dictionary<System.Reflection.MethodBase, CLRRedirectionDelegate> redirectMap = new Dictionary<System.Reflection.MethodBase, CLRRedirectionDelegate>();
         Dictionary<System.Reflection.FieldInfo, CLRFieldGetterDelegate> fieldGetterMap = new Dictionary<System.Reflection.FieldInfo, CLRFieldGetterDelegate>();
         Dictionary<System.Reflection.FieldInfo, CLRFieldSetterDelegate> fieldSetterMap = new Dictionary<System.Reflection.FieldInfo, CLRFieldSetterDelegate>();
@@ -139,7 +145,7 @@ namespace ILRuntime.Runtime.Enviorment
         public IType ObjectType { get { return objectType; } }
 
         /// <summary>
-        /// Attention, this property isn't thread safe
+        /// 内部函数集合 Attention, this property isn't thread safe
         /// </summary>
         public Dictionary<string, IType> LoadedTypes { get { return mapType.InnerDictionary; } }
         internal Dictionary<MethodBase, CLRRedirectionDelegate> RedirectMap { get { return redirectMap; } }
@@ -954,11 +960,11 @@ namespace ILRuntime.Runtime.Enviorment
         }
 
         /// <summary>
-        /// Invokes a specific method
+        ///调用方法
         /// </summary>
-        /// <param name="m">Method</param>
-        /// <param name="instance">object instance</param>
-        /// <param name="p">Parameters</param>
+        /// <param name="m">方法</param>
+        /// <param name="instance">谁调用</param>
+        /// <param name="p">参数</param>
         /// <returns></returns>
         public object Invoke(IMethod m, object instance, params object[] p)
         {
