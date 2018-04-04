@@ -409,7 +409,7 @@ namespace ILRuntime.CLR.TypeSystem
                     interfaces[i] = appdomain.GetType(definition.Interfaces[i], this, null);
                     //only one clrInterface is valid
                     if (interfaces[i] is CLRType && firstCLRInterface == null)
-                    {
+                    {//跨域继承，需要绑定
                         CrossBindingAdaptor adaptor;
                         if (appdomain.CrossBindingAdaptors.TryGetValue(interfaces[i].TypeForCLR, out adaptor))
                         {

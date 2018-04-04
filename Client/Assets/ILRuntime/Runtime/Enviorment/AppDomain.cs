@@ -27,6 +27,9 @@ namespace ILRuntime.Runtime.Enviorment
     {
         Queue<ILIntepreter> freeIntepreters = new Queue<ILIntepreter>();
         Dictionary<int, ILIntepreter> intepreters = new Dictionary<int, ILIntepreter>();
+        /// <summary>
+        /// 跨域绑定
+        /// </summary>
         Dictionary<Type, CrossBindingAdaptor> crossAdaptors = new Dictionary<Type, CrossBindingAdaptor>(new ByReferenceKeyComparer<Type>());
         Dictionary<Type, ValueTypeBinder> valueTypeBinders = new Dictionary<Type, ValueTypeBinder>();
         /// <summary>
@@ -154,6 +157,9 @@ namespace ILRuntime.Runtime.Enviorment
         internal Dictionary<Type, CLRMemberwiseCloneDelegate> MemberwiseCloneMap { get { return memberwiseCloneMap; } }
         internal Dictionary<Type, CLRCreateDefaultInstanceDelegate> CreateDefaultInstanceMap { get { return createDefaultInstanceMap; } }
         internal Dictionary<Type, CLRCreateArrayInstanceDelegate> CreateArrayInstanceMap { get { return createArrayInstanceMap; } }
+        /// <summary>
+        /// 跨域绑定
+        /// </summary>
         internal Dictionary<Type, CrossBindingAdaptor> CrossBindingAdaptors { get { return crossAdaptors; } }
         internal Dictionary<Type, ValueTypeBinder> ValueTypeBinders { get { return valueTypeBinders; } }
         public DebugService DebugService { get { return debugService; } }
