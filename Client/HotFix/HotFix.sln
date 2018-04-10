@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotFix", "HotFix.csproj", "{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Android_发布|Any CPU = Android_发布|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		IOS_发布|Any CPU = IOS_发布|Any CPU
+		Release|Any CPU = Release|Any CPU
+		本地测试|Any CPU = 本地测试|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.Android_发布|Any CPU.ActiveCfg = Android_发布|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.Android_发布|Any CPU.Build.0 = Android_发布|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.IOS_发布|Any CPU.ActiveCfg = IOS_发布|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.IOS_发布|Any CPU.Build.0 = IOS_发布|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.本地测试|Any CPU.ActiveCfg = 本地测试|Any CPU
+		{F6F32EB1-2463-48D6-AFA6-BBDB9AB4B75A}.本地测试|Any CPU.Build.0 = 本地测试|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26AB0EC9-7DC9-4D46-BFD2-77D7D2F9AAC7}
+	EndGlobalSection
+EndGlobal
