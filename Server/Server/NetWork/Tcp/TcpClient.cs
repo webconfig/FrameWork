@@ -113,6 +113,13 @@ public class TcpClient
         recvThraed = new Thread(ProcessReceive);
         recvThraed.Start();
     }
+    public void StartRrcv(Socket _socket)
+    {
+        Debug.LogError("开始接受数据");
+        socket = _socket;
+        recvThraed = new Thread(ProcessReceive);
+        recvThraed.Start();
+    }
 
     Int32 DataSize = 0, MsgSize = 0, bytesRead = 0;
     public byte[] head_data;

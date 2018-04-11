@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 /// <summary>
 /// 网络模块
@@ -27,8 +28,8 @@ public class NetBase
     public Action<bool> ConnectResultEvent;
 
     public object has_send_obj = new object();
-    public bool has_send = false, has_recv = false,can_send_heart=false,can_check_dis=false;
-    public double heart_time=0, dis_time=0;
+    public bool has_send = false, has_recv = false, can_send_heart = false, can_check_dis = false;
+    public double heart_time = 0, dis_time = 0;
     private DateTime last_send, Last_recv;
     private object msg_obj = new object();
     public List<MsgData> msgs = new List<MsgData>();
@@ -36,13 +37,11 @@ public class NetBase
     public List<MsgData> msg_pool = new List<MsgData>();
     private object msg_pool_obj = new object();
 
-    public NetBase(string _ip, int _port, float _HeartTime, float _DisConnTime, NetWorkType _type)
+    public NetBase(float _HeartTime, float _DisConnTime, NetWorkType _type)
     {
-        ip = _ip;
-        port = _port;
         type = _type;
-        DisConnTime = _DisConnTime*1000;
-        HeartTime = _HeartTime*1000;
+        DisConnTime = _DisConnTime * 1000;
+        HeartTime = _HeartTime * 1000;
         lock (msg_obj) { }
         switch (type)
         {
@@ -60,9 +59,11 @@ public class NetBase
     }
 
     #region 连接
-    public void Conn(uint conv)
+    public void Conn(string _ip, int _port, uint conv)
     {
         Clear();
+        ip = _ip;
+        port = _port;
         switch (type)
         {
             case NetWorkType.Kcp:
@@ -93,6 +94,21 @@ public class NetBase
         if (DisConnectEvent != null)
         {
             DisConnectEvent();
+        }
+    }
+    #endregion
+
+    #region 接受数据
+    private void StartRrcv()
+    {
+        switch (type)
+        {
+            case NetWorkType.Kcp:
+                //kcp.Connect(ip, port, conv);
+                break;
+            case NetWorkType.Tcp:
+                tcp.StartRrcv();
+                break;
         }
     }
     #endregion
@@ -184,11 +200,11 @@ public class NetBase
         {
             DealData();
             //Debug.Log("断线判断时间：" + dis_time + ",心跳时间：" + heart_time);
-            if (has_send) { has_send = false; last_send = DateTime.Now; can_send_heart = true;}
+            if (has_send) { has_send = false; last_send = DateTime.Now; can_send_heart = true; }
             if (has_recv) { has_recv = false; Last_recv = DateTime.Now; can_check_dis = true; }
             if (can_send_heart)
             {//没间隔1秒发一个心跳包
-                heart_time= (DateTime.Now - last_send).TotalMilliseconds;
+                heart_time = (DateTime.Now - last_send).TotalMilliseconds;
                 if (heart_time >= HeartTime)
                 {
                     SendHeart();
@@ -322,15 +338,16 @@ public class NetBase
     }
 
     #region 处理数据
-    public void StartRecv()
+    public void StartRecv(Socket socket, Dictionary<Int32, Action<NetBase, System.Byte[], System.Int32>> _handlers)
     {
+        handlers = _handlers;
         switch (type)
         {
             case NetWorkType.Kcp:
                 //kcp.StartRrcv();
                 break;
             case NetWorkType.Tcp:
-                tcp.StartRrcv();
+                tcp.StartRrcv(socket);
                 break;
         }
     }
