@@ -1,0 +1,39 @@
+ syntax = "proto3";
+ package Protocol;
+ 
+ enum ProtocolCmd
+ {
+    None=0;
+	CSJoinRoom		       = 		1001;	//请求加入房间
+	SCJoinRoom		       = 		2001;	//请求加入房间
+	CSHeartBeat 	       =		1002;	//心跳协议请求
+	SCHeartBeat 	       =		2002;	//心跳协议请求		
+	CSGetServerLocalTime   = 		1003;   //获取服务器时间
+	SCGetServerLocalTime   = 		2003; 	//获取服务器时间返回	
+
+ }
+ //===通用
+ message pkgCSJoinRoom
+ {
+	int64 roomid 	= 1; //房间id
+	int32 userId 	= 2; //玩家id
+	string token 	= 3; //玩家toten
+ }
+ 
+ message pkgSCJoinRoom
+ {
+	int32 ok = 1; //1成功 0失败
+ }
+
+ message pkgCSGetServerLocalTime
+ {
+	int64 client_times = 1;
+ }
+ 
+ message pkgSCGetServerLocalTime
+ {
+	int64 client_times = 1;
+	int64 server_tiems = 2;
+ }  
+ 
+ 
