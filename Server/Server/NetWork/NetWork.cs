@@ -13,15 +13,15 @@ public class NetBase
 
     public string ip;
     public int port;
-    public int udp_port;
+    public string address;// udp_port;
 
     public float DisConnTime = 3, HeartTime = 1;
 
     public NetWorkType type;
     /// <summary>
-    /// 状态 -1：网络断开  1：连接
+    /// 状态 -1：网络断开 1：连接成功 2：认证成功
     /// </summary>
-    public int state;
+    public int state=0;
 
     public Action DisConnectEvent;
     public Action HeartEvent;
@@ -54,6 +54,19 @@ public class NetBase
                 tcp = new TcpClient(this);
                 tcp.DisConnectEvent += DisConn;
                 tcp.ConnectResultEvent += ConnectBack;
+                break;
+        }
+    }
+
+    public void SetBuffer(int buffer_size, int head_data_size)
+    {
+        switch (type)
+        {
+            case NetWorkType.Kcp:
+                //kcp.Connect(ip, port, conv);
+                break;
+            case NetWorkType.Tcp:
+                tcp.SetBuffer(buffer_size, head_data_size);
                 break;
         }
     }

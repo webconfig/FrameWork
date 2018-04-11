@@ -21,10 +21,16 @@ public class TcpClient
 
     public TcpClient(NetBase _parent)
     {
-        BufferSize = BufferSize * 5;
-        this.buffer = new byte[BufferSize];
         parent = _parent;
-        head_data = new byte[20]; 
+    }
+    public void SetBuffer(int buffer_size, int head_data_size)
+    {
+        BufferSize = buffer_size;
+        this.buffer = new byte[BufferSize];
+        if (head_data_size > 0)
+        {
+            head_data = new byte[head_data_size];
+        }
     }
 
     #region 连接
@@ -63,7 +69,7 @@ public class TcpClient
         try
         {
             socket.EndConnect(result);
-            parent.state = 10;
+            parent.state = 1;
             StartRrcv();
             if (ConnectResultEvent != null)
             {

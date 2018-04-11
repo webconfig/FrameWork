@@ -6,6 +6,10 @@ public class NetWorkManager
 {
     private Game game;
     private Dictionary<Int32, Action<NetBase, System.Byte[], System.Int32>> handlers = new Dictionary<int, Action<NetBase, System.Byte[], System.Int32>>();
+
+    private List<JoinClient> clients;
+    private List<JoinClient> clients_add;
+    private object clients_add_obj = new object();
     public void Init(Game _game)
     {
         game = _game;
@@ -40,32 +44,15 @@ public class NetWorkManager
     }
 
     /// <summary>
-    /// 加入房价
+    /// 加入房间
     /// </summary>
     /// <param name="client"></param>
     /// <param name="datas"></param>
     /// <param name="player_id"></param>
-    private void JoinRoomRep(NetBase client, byte[] datas, Int32 player_id)
+    private void JoinRoom(NetBase client, byte[] datas, Int32 player_id)
     {
-        
-    }
-    /// <summary>
-    /// 加载进度
-    /// </summary>
-    /// <param name="client"></param>
-    /// <param name="datas"></param>
-    private void ProgressRate(NetBase client, byte[] datas, Int32 player_id)
-    {
-       
-    }
-    /// <summary>
-    /// 游戏配置
-    /// </summary>
-    /// <param name="client"></param>
-    /// <param name="datas"></param>
-    private void GameConfig(NetBase client, byte[] datas, Int32 player_id)
-    {
-
+        client.state = 2;
+        game.JoinClient(1, client);
     }
 
     /// <summary>
@@ -137,7 +124,16 @@ public class NetWorkManager
             System.Net.Sockets.TcpClient tcpClient = NetworkListener.EndAcceptTcpClient(ar);
             Log.Info(string.Format("新链接:{0}", tcpClient.Client.RemoteEndPoint));
             NetBase netBase = new NetBase(1, 3, NetWorkType.Tcp);
+            netBase.SetBuffer(100, 10);
             netBase.StartRecv(tcpClient.Client, handlers);
+
+            JoinClient client = new JoinClient();
+            client.net = netBase;
+            client.time = DateTime.Now.Ticks;
+            lock (clients_add_obj)
+            {
+                clients_add.Add(client);
+            }
         }
         catch (Exception ex)
         {
@@ -146,5 +142,51 @@ public class NetWorkManager
         NetworkListener.BeginAcceptTcpClient(new AsyncCallback(this.BeginAcceptTcpClient), (object)null);
     }
     #endregion
+
+    private long run_time, check_time = 1000 * 1000;
+    public void Update()
+    {
+        if (clients_add.Count > 0)
+        {
+            lock (clients_add_obj)
+            {
+                clients.AddRange(clients_add);
+                clients_add.Clear();
+            }
+        }
+
+        if (clients.Count > 0)
+        {
+            for (int i = 0; i < clients.Count; i++)
+            {
+                if (clients[i].net.state < 2)
+                {//没验证成功,才在这里运行
+                    run_time = DateTime.Now.Ticks - clients[i].time;
+                    if (run_time >= check_time)
+                    {//超过时间除掉
+
+                        clients[i].net.End();
+                        clients.RemoveAt(i);
+                        i--;
+                    }
+                    else
+                    {
+                        clients[i].net.Update();
+                    }
+                }
+                else
+                {//认证成功，移除
+                    clients.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+    }
+}
+
+public class JoinClient
+{
+    public NetBase net;
+    public long time;
 }
 

@@ -7,50 +7,26 @@ public class Game
     /// 玩家集合
     /// </summary>
     public Dictionary<int, NetBase> clients = new Dictionary<int, NetBase>();
-    public List<ClientJoin> clients_add = new List<ClientJoin>();
     public int state = 0;
+    /// <summary>
+    /// 网络
+    /// </summary>
     public NetWorkManager net;
-
+    /// <summary>
+    /// 定时器
+    /// </summary>
+    public Time time;
     public void Init()
     {
+        time = new Time();
+        time.update += Update;
         net = new NetWorkManager();
         net.Init(this);
     }
 
-    long frameNumber = 1;
-    long interval,run_time;
-    DateTime lastTickTime;
-    public void Run()
-    {
-        interval = 50 * 10000;
-        lastTickTime = DateTime.UtcNow;
-        while (true)
-        {
-            try
-            {
-                while (true)
-                {
-                    //===============================
-                    run_time = (DateTime.UtcNow - lastTickTime).Ticks;
-                    while (run_time < interval) System.Threading.Thread.Sleep(5);  
-                    //deltaTime = run_time / (10000 * 1000.00f);
-                    lastTickTime = DateTime.UtcNow;
-                    //=============================
-                    frameNumber++;
-                    Update();
-                }
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + "\nStack Trace:\n" + e.StackTrace);
-            }
-
-        }
-    }
-
     private void Update()
     {
+        net.Update();
         //if (state == 0) { return; }
         //if (state == -100) { Index = 0; state = -101; }
         //if (state == -101) { Index++; if (Index == 5) { server.Close(); state = -200; timer1.Stop(); } }
@@ -72,6 +48,26 @@ public class Game
         //this.SendMsg();
         //msg_intput.Clear();
     }
+
+    /// <summary>
+    /// 加入房间
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="net"></param>
+    public void JoinClient(int id,NetBase net)
+    {
+        if(clients.ContainsKey(id))
+        {//顶替
+            Debug.LogWarning("顶替：" + net.address + "<-->" + clients[id].address);
+            clients[id].End();
+            clients[id] = net;
+        }
+        else
+        {
+            clients.Add(id, net);
+        }
+    }
+
 
     /// <summary>
     /// 处理输入
@@ -209,18 +205,6 @@ public class Game
         //}
     }
 
-}
-public struct ClientJoin
-{
-    public NetBase client;
-    public int index;
-    public int id;
-    public ClientJoin(NetBase _client, int _index, int _id)
-    {
-        client = _client;
-        index = _index;
-        id = _id;
-    }
 }
 
 
