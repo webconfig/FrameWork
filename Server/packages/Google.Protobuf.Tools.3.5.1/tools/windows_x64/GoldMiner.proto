@@ -1,0 +1,234 @@
+ syntax = "proto3";
+ package Protocol;
+ 
+ enum ProtocolCmd
+ {
+    None=0;
+	//===通用
+	CSLogOutReq 			=		1003;	//退出
+	SCLogOutRep 			=		1004;	//退出
+	CSHeartBeatReq 			=		1010;	//心跳协议请求
+	SCHeartBeatRep 			=		1011;	//心跳协议请求
+	CSARoundOverReq 		=		1012;	//一盘游戏结束
+	SCARoundOverRep 		=		1013;	//一盘游戏结束
+	CSJoinRoomReq			= 		1016;	//请求加入房间
+	SCJoinRoomRep			=		1017;	//请求加入房间
+
+	CSProgressRateReq		= 		1021;	//加载进度
+	SCProgressRateRep		= 		1022;	//加载进度
+	SCGameStartRep			= 		1023;	//游戏开始
+		
+	CSGetServerLocalTimeReq = 		1101;   //获取服务器时间
+	SCGetServerLocalTimeRep = 		1102; 	//获取服务器时间返回	
+	
+	CSGetTipsContentReq		= 		1080; //获取游戏提示
+	SCGetTipsContentRep	    = 		1081; //获取游戏提示	
+		
+	//=========
+	CSGameConfigReq		    = 		1151;	//获取游戏配置
+	SCGameConfigRep		    = 		1152;	//返回游戏配置
+
+	SCGameRun		        = 		1161;	//返回游戏正式开始
+
+	//=========
+	CSUpState		        = 		1171;	//上传改变的状态
+	SCDownState		        = 		1172;	//服务器下发状态改变
+
+	SCStageCreateNoteiceRep =       1182;
+
+ }
+ 
+ //=======消息定义=========
+ 
+ enum ERROCODE 
+ {
+	ERROCODE_NONE = 0;
+	SUCCESSFUL = 1;
+ }
+ 
+ message MapRes
+ {
+	int32 x = 1;
+	int32 y = 2;
+	int32 res_type = 3;
+	int32 speed=4; //速度
+	int32 socre=5; //分数
+ }
+ 
+ //===通用
+ message pkgCSJoinRoomReq
+ {
+	int64 iroomid 	= 1; //房间号 玩家id在消息头种赋值
+	int32 userId 	= 2; //玩家id
+	string token 	= 3; //玩家toten
+ }
+ 
+ message pkgSCJoinRoomRep
+ {
+	int32 ok = 1; //1成功 0失败
+ }
+ 
+ message pkgCSProgressRateReq//加载进度
+ {
+	int32 rate = 1; //0到100
+ }
+ 
+ message pkgSCProgressRateRep//加载进度
+ {
+	int32 rate = 1; //0到100
+	int32 userid = 2; //玩家id
+ }
+ 
+ message pkgSCGameStartRep//游戏开始
+ {
+	int64 ok = 1; //任意值
+ }
+ 
+ message pkgSCGameOverRep//服务器返回结果
+ {
+	int32 ok = 1;
+ }
+ 
+ message pkgCSLogOutReq
+ {
+	int32 ok = 1;
+ } 
+ 
+ message pkgSCLogOutRep
+ {
+	int32 ok = 1;
+ }
+ 
+ message pkgCSHeartBeatReq
+ {
+	int32 ok = 1; //任意值
+ } 
+ 
+ message pkgSCHeartBeatRep
+ {
+	int32 itimes = 1; //
+ }	
+ 
+ message pkgCSARoundOverReq
+ {
+	int32 ok = 1; //任意值
+ }
+ 
+ message pkgSCARoundOverRep
+ {
+	int32 ok = 1; //任意值
+ } 
+ 
+ message pkgCSGetServerLocalTimeReq
+ {
+	int64 client_times = 1;
+ }
+ 
+ message pkgSCGetServerLocalTimeRep
+ {
+	int64 client_times = 1;
+	int64 server_tiems = 2;
+ }  
+ 
+ message pkgCSGetTipsContentReq 
+ {
+	int32 req = 1;
+ }
+ 
+ message pkgSCGetTipsContentRep
+ {
+	string tips = 1;
+ } 
+ 
+ message pkgCSGameConfigReq 
+ {
+	int32 id = 1;
+ }
+ 
+ message pkgSCGameConfigRep
+ {
+	int32 position=1;//位置
+	int32 Angle = 2;//最大角度
+	int32 HookRotationSpeed = 3;//旋转速度
+	int32 HookRunSpeed=4;//空钩速度
+	int32 Player1StartRotaion = 5;//玩家1开始角度
+	int32 Player2StartRotaion = 6;//玩家2开始角度
+	int32 HookMaxLength = 7;//最远飞多长
+	repeated MapRes mapres =8;
+	int32 LifeTime=9;//加速道具持续时间
+ }
+ 
+  //游戏正式开始
+  message pkgSCGameRun
+ {
+	int64 server_tiems = 1;
+ }
+
+ //物体状态 id：x坐标*100+y坐标,start_time:状态改变时间,state：状态
+ message pkgItemState
+ {
+   int32 id=1;
+   int64 start_time=2;
+   int32 state=3;
+ }
+ //上传钩子状态
+ message pkgCSUpHookState
+ {
+   int32 player=1;
+   int64 start_time=2;
+   int32 state=3;
+   int32 x=4;
+   int32 y=5;
+   int32 rotaion=6;
+   int32 hit_obj1=7;
+   int64 hit_obj1_time=8;
+   int32 hit_obj2=9; 
+   int64 hit_obj2_time=10;
+   int32 speed_buffer=11;
+   int32 current_speed_x=12;
+   int32 current_speed_y=13;
+   int32 btn1_obj=14;
+   int32 btn2_obj=15;
+   int64 speed_buffer_start_time=16;
+ }
+  //服务器下发钩子状态
+ message pkgSCHookState
+ {
+   int32 player=1;
+   int64 start_time=2;
+   int32 state=3;
+   int32 x=4;
+   int32 y=5;
+   int32 rotaion=6;
+   int32 rotaion_next=7;
+   int32 hit_obj=8;
+   int64 hit_obj1_time=9;
+   int32 speed_buffer=10;
+   int32 current_speed_x=11;
+   int32 current_speed_y=12;
+   int32 btn1_obj=13;
+   int32 btn2_obj=14;
+   int64 speed_buffer_start_time=15;
+   int64 type=16;//1：转发 2：更正
+ }
+
+
+
+  //服务器下发状态改变
+  message pkgDownState
+ {
+   repeated pkgSCHookState HookState=1;
+   repeated pkgItemState ItemStates=2;
+   int32 score1=3;
+   int32 score2=4;
+ }
+
+ message pkgSCStageCreateNoteiceRep
+ {
+	repeated MapRes mapres = 1;
+ }
+
+ 
+ 
+ 
+ 
