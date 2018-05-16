@@ -198,9 +198,17 @@ public class App : MonoBehaviour
     public Material mat_green, mat_red;
     private void OnGUI()
     {
-        if(GUI.Button(new Rect(100, 200, 100, 100), "地图生成"))
+        if(GUI.Button(new Rect(100, 200, 50, 50), "生成"))
         {
             game.world.RayCast();
+        }
+        if (GUI.Button(new Rect(200, 200, 50, 50), "保存"))
+        {
+            game.world.Serialization();
+        }
+        if (GUI.Button(new Rect(300, 200, 50, 50), "加载"))
+        {
+            game.world.DeSerialization();
         }
     }
 

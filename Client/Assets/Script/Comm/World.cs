@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
+using Google.Protobuf;
+using Protocol;
 public class World
 {
     public Vector3 start_positon;
-    public int x_add;
-    public int z_add;
+    public float x_add;
+    public float z_add;
     public int x_max;
     public int z_max;
     public Cell[,] items;
     
-    public World(Vector3 p, int _x_add, int _z_add, int _x_max, int _z_max)
+    public World(Vector3 p, float _x_add, float _z_add, int _x_max, int _z_max)
     {
         start_positon = p;
 
@@ -42,6 +43,37 @@ public class World
         }
     }
 
+    public void DeSerialization()
+    {
+        string path = Application.dataPath + "/Config/map.bin";
+        byte[] bytes = System.IO.File.ReadAllBytes(path);
+        pkgWorldData worldData = new pkgWorldData();
+        worldData.MergeFrom(bytes);
+        x_add = worldData.XAdd / 1000.00f;
+        z_add = worldData.ZAdd / 1000.00f;
+        x_max = worldData.XMax;
+        z_max = worldData.ZMax;
+
+        for (int i = 0; i < x_max; i++)
+        {
+            for (int j = 0; j < z_max; j++)
+            {
+                items[i, j].state = 0;
+            }
+        }
+
+        int x = 0, z = 0;
+        for (int i = 0; i < worldData.Datas.Count; i++)
+        {
+            x = worldData.Datas[i].Position / 100;
+            z = worldData.Datas[i].Position % 100;
+            items[x, z].state = worldData.Datas[i].State;
+        }
+        //====
+        DrawBox();
+    }
+
+    //=========调试==============
     public void RayCast()
     {
         for (int i = 0; i < x_max; i++)
@@ -60,7 +92,6 @@ public class World
         }
         DrawBox();
     }
-
     private MeshFilter mesh_filter_green, mesh_filter_red;
     private MeshRenderer mesh_render_green, mesh_render_red;
     private Vector3[] vertices;
@@ -80,7 +111,6 @@ public class World
         mesh_render_red.material = mat_red;
         _debug = true;
     }
-
     private  void DrawBox()
     {
         if (!_debug) { return; }
@@ -110,8 +140,6 @@ public class World
         mesh_filter_red.mesh.vertices = vertices;
         mesh_filter_red.mesh.triangles = triangles_red.ToArray();
     }
-
-    //=======调试========
     public void OnGUI()
     {
         Vector3 p1 = new Vector3(), p2 = new Vector3();
@@ -150,6 +178,30 @@ public class World
         //    }
         //}
 
+    }
+    public void Serialization()
+    {
+        pkgWorldData worldData = new pkgWorldData();
+        worldData.XAdd = (int)(x_add * 1000);
+        worldData.ZAdd = (int)(z_add * 1000);
+        worldData.XMax = x_max;
+        worldData.ZMax = z_max;
+        for (int i = 0; i < x_max; i++)
+        {
+            for (int j = 0; j < z_max; j++)
+            {
+                if (items[i, j].state != 0)
+                {
+                    pkgCell pkgCell = new pkgCell();
+                    pkgCell.Position = i * 100 + j;
+                    pkgCell.State = items[i, j].state;
+                    worldData.Datas.Add(pkgCell);
+                }
+            }
+        }
+        byte[] bytes = worldData.ToByteArray();
+        string path = Application.dataPath + "/Config/map.bin";
+        System.IO.File.WriteAllBytes(path, bytes);
     }
 }
 public class Cell

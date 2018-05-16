@@ -16,7 +16,7 @@ public class Game
         network.Conn(1);
 
         //==初始化地图
-        world = new World(new Vector3(0, 0, 0), 1, 1,3, 3);
+        world = new World(new Vector3(0, 0, 0), 0.5f, 0.5f, 100, 100);
     }
 
    
