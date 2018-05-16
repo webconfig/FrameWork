@@ -194,7 +194,10 @@ namespace ILRuntime.CLR.Method
             get
             {
                 if (body == null)
+                {
+                    UnityEngine.Debug.Log("=====初始化 Body=====");
                     InitCodeBody();
+                }
                 return body;
             }
         }

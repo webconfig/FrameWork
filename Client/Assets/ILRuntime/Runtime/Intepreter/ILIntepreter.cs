@@ -1732,7 +1732,7 @@ namespace ILRuntime.Runtime.Intepreter
                                             if (!processed)
                                             {
                                                 var redirect = cm.Redirection;
-                                                if (redirect != null)
+                                                if (redirect != null)//判断方法是不是重定向
                                                     esp = redirect(this, esp, mStack, cm, false);
                                                 else
                                                 {

@@ -21,6 +21,9 @@ namespace ILRuntime.CLR.Method
         CLRType declaringType;
         ParameterInfo[] param;
         bool isConstructor;
+        /// <summary>
+        /// 重定向函数
+        /// </summary>
         CLRRedirectionDelegate redirect;
         IType[] genericArguments;
         object[] invocationParam;
@@ -86,7 +89,9 @@ namespace ILRuntime.CLR.Method
                     return def.IsStatic;
             }
         }
-
+        /// <summary>
+        /// 重定向函数
+        /// </summary>
         public CLRRedirectionDelegate Redirection { get { return redirect; } }
 
         public MethodInfo MethodInfo { get { return def; } }
@@ -139,6 +144,7 @@ namespace ILRuntime.CLR.Method
 
             if (def != null)
             {
+                //方法重定向
                 appdomain.RedirectMap.TryGetValue(cDef, out redirect);
             }
         }

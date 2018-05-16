@@ -151,6 +151,9 @@ namespace ILRuntime.Runtime.Enviorment
         /// 内部函数集合 Attention, this property isn't thread safe
         /// </summary>
         public Dictionary<string, IType> LoadedTypes { get { return mapType.InnerDictionary; } }
+        /// <summary>
+        /// 函数重定向
+        /// </summary>
         internal Dictionary<MethodBase, CLRRedirectionDelegate> RedirectMap { get { return redirectMap; } }
         internal Dictionary<FieldInfo, CLRFieldGetterDelegate> FieldGetterMap { get { return fieldGetterMap; } }
         internal Dictionary<FieldInfo, CLRFieldSetterDelegate> FieldSetterMap { get { return fieldSetterMap; } }
@@ -666,7 +669,13 @@ namespace ILRuntime.Runtime.Enviorment
         {
             return scope is AssemblyNameReference ? ((AssemblyNameReference)scope).FullName : null;
         }
-
+        /// <summary>
+        /// 获取类型
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="contextType"></param>
+        /// <param name="contextMethod"></param>
+        /// <returns></returns>
         internal IType GetType(object token, IType contextType, IMethod contextMethod)
         {
             int hash = token.GetHashCode();

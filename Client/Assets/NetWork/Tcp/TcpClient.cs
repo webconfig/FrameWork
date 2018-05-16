@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Sockets;
-using UnityEngine;
 using System.Threading;
 using System.Net;
 
@@ -25,7 +24,7 @@ public class TcpClient
         BufferSize = BufferSize * 5;
         this.buffer = new byte[BufferSize];
         parent = _parent;
-        head_data = new byte[20]; 
+        head_data = new byte[20];
     }
 
     #region 连接
@@ -114,6 +113,13 @@ public class TcpClient
         recvThraed = new Thread(ProcessReceive);
         recvThraed.Start();
     }
+    public void StartRrcv(Socket _socket)
+    {
+        Debug.LogError("开始接受数据");
+        socket = _socket;
+        recvThraed = new Thread(ProcessReceive);
+        recvThraed.Start();
+    }
 
     Int32 DataSize = 0, MsgSize = 0, bytesRead = 0;
     public byte[] head_data;
@@ -185,7 +191,7 @@ public class TcpClient
         }
         catch (Exception ex)
         {
-            Debug.LogError("==============接受数据异常退出："+ex.ToString());
+            Debug.LogError("==============接受数据异常退出：" + ex.ToString());
         }
     }
     #endregion
@@ -219,7 +225,7 @@ public class TcpClient
         }
         catch (Exception ex)
         {
-            UnityEngine.Debug.LogError("发送数据错误:" + ex.ToString());
+            Debug.LogError("发送数据错误:" + ex.ToString());
             parent.DisConn();
         }
 
@@ -234,7 +240,7 @@ public class TcpClient
         }
         catch (Exception ex)
         {
-            UnityEngine.Debug.LogError("发送数据错误:" + ex.ToString());
+            Debug.LogError("发送数据错误:" + ex.ToString());
             parent.DisConn();
         }
 
