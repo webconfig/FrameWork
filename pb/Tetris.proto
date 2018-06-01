@@ -1,0 +1,218 @@
+ syntax = "proto3";
+ package Protocol;
+ 
+ enum ProtocolCmd
+ {
+    None=0;
+	//===通用
+	CSLogOutReq 			=		1003;	//退出
+	SCLogOutRep 			=		1004;	//退出
+	CSARoundOverReq 		=		1012;	//一盘游戏结束
+	SCARoundOverRep 		=		1013;	//一盘游戏结束
+	CSHeartBeatReq 			=		1010;	//心跳协议请求
+	SCHeartBeatRep 			=		1011;	//心跳协议请求
+	CSJoinRoomReq			= 		1016;	//请求加入房间
+	SCJoinRoomRep			=		1017;	//请求加入房间
+	//==
+	CSProgressRateReq		= 		1021;	//加载进度
+	SCProgressRateRep		= 		1022;	//加载进度
+	SCGameStartRep			= 		1023;	//游戏开始
+	//==
+	CSGetServerLocalTimeReq = 		1101;   //获取服务器时间
+	SCGetServerLocalTimeRep = 		1102; 	//获取服务器时间返回	
+	//==
+	CSGetTipsContentReq		= 		1080; //获取游戏提示
+	SCGetTipsContentRep	    = 		1081; //获取游戏提示	
+	//==
+	SCGClientNetkStatusRep  = 		1053; //获取客户端状态
+	CSPushClientNetStatusReq = 		1054; //推送网络状态请求
+	//=========
+	CSGameConfigReq		    = 		1151;	//获取游戏配置
+	SCGameConfigRep		    = 		1152;	//返回游戏配置
+	SCGameRun		        = 		1161;	//返回游戏正式开始
+	//=========
+	CSUpState		        = 		1171;	//上传改变的状态
+	SCDownState		        = 		1172;	//服务器下发状态改变
+	//==
+    CSGetItemLstReq			= 1181; //获取队列
+	SCGetItemLstRep			= 1182; //获取队列返回
+ }
+ //=======消息定义=========
+ enum ERROCODE 
+ {
+	ERROCODE_NONE = 0;
+	SUCCESSFUL = 1;
+ }
+ 
+ message MapRes
+ {
+	int32 x = 1;
+	int32 y = 2;
+	int32 res_type = 3;
+	int32 speed=4; //速度
+	int32 socre=5; //分数
+ }
+ 
+ //===通用
+ message pkgCSJoinRoomReq
+ {
+	int64 iroomid 	= 1; //房间号 玩家id在消息头种赋值
+	int32 userId 	= 2; //玩家id
+	string token 	= 3; //玩家toten
+ }
+ 
+ message pkgSCJoinRoomRep
+ {
+	int32 ok = 1; //1成功 0失败
+ }
+ //加载进度
+ message pkgCSProgressRateReq
+ {
+	int32 rate = 1; //0到100
+ }
+ 
+ //加载进度
+ message pkgSCProgressRateRep
+ {
+	int32 rate = 1; //0到100
+	int32 userid = 2; //玩家id
+ }
+
+ //游戏开始
+ message pkgSCGameStartRep
+ {
+	int64 ok = 1; //任意值
+ }
+ //服务器返回结果
+ message pkgSCGameOverRep
+ {
+	int32 ok = 1;
+ }
+ 
+ message pkgCSLogOutReq
+ {
+	int32 ok = 1;
+ } 
+ 
+ message pkgSCLogOutRep
+ {
+	int32 ok = 1;
+ }
+ 
+ message pkgCSHeartBeatReq
+ {
+	int32 ok = 1; //任意值
+ } 
+ 
+ message pkgSCHeartBeatRep
+ {
+	int32 itimes = 1; //
+ }	
+ 
+ message pkgCSARoundOverReq
+ {
+	int32 ok = 1; //任意值
+ }
+ 
+ message pkgSCARoundOverRep
+ {
+	int32 ok = 1; //任意值
+ } 
+ 
+ message pkgCSGetServerLocalTimeReq
+ {
+	int64 client_times = 1;
+ }
+ 
+ message pkgSCGetServerLocalTimeRep
+ {
+	int64 client_times = 1;
+	int64 server_tiems = 2;
+ }  
+ 
+ message pkgCSGetTipsContentReq 
+ {
+	int32 req = 1;
+ }
+ 
+ message pkgSCGetTipsContentRep
+ {
+	string tips = 1;
+ } 
+ 
+ message pkgCSGameConfigReq 
+ {
+	int32 id = 1;
+ }
+ 
+ message pkgSCGameConfigRep
+ {
+	int32 speed_y=1;//下落速度
+	int32 speed_x = 2;//左右移动的速度
+	int32 speed_y2 = 3;//按住向下按钮的下落速度
+	repeated Item Items=4;//新的物体
+ }
+
+ //物体状态
+ message pkgItemState
+ {
+   int32 id=1;
+   int64 start_time=2;
+   int32 state=3;
+ }
+ //物体状态
+ message ItemState
+ {
+   int32 id=1;//下落物体的id
+   int64 start_time=2;//状态开始的时间
+   int32 state=3;//当前状态 1：生成 2：下落 3：下落完成
+   int32 x=4;//x坐标
+   int32 y=5;//y坐标
+   int32 rotaion=6;//旋转类型
+   int32 speed_x=7;//水平速度
+   int32 speed_y=8;//下落速度
+ }
+ //物体
+ message Item
+ {
+    int32 type=1;//类型 1-8物体，value为id  9：新的一行，value为新行数据 10：锁死 11：速度加倍，value为加多少
+	int32 value=2;
+ }
+
+   //客户端上传状态
+  message pkgCSState
+ {
+   ItemState CurrentItemState=1;//当前物体状态
+   repeated int32 UseType=2;//使用什么道具 1：飞机 2：锁死 3：新一行 4：加速
+ }
+
+  //服务器下发状态
+  message pkgSCState
+ {
+   ItemState CurrentItemState=1;//当前下落物体的状态
+   repeated Item Items=2;//新的物体
+ }
+ 
+
+   message pkgSCGClientNetkStatusRep 
+ {
+	int32 network_status = 1;
+ }
+ 
+ message pkgCSPushClientNetStatusReq
+ {
+	int32 network_status = 1;
+ }
+ 
+ message pkgCSGetItemLstReq
+ {
+	int32 lst_num = 1; //请求个数
+ }
+ 
+ message pkgSCGetItemLstRep
+ {
+	repeated Item items=1;//新的物体 
+ }
+ 
+ 
+ 
